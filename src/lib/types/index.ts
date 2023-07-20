@@ -1,9 +1,9 @@
-type Player = {
+export type Player = {
 	name: string;
 	id: number;
 };
 
-type Team = {
+export type Team = {
 	name: string;
 	players: Player[];
 };

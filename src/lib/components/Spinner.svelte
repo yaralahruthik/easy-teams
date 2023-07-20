@@ -6,9 +6,9 @@
 	import Chart, { type ChartConfiguration, type ChartData } from 'chart.js/auto';
 	import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-	import type { Settings } from '$lib/types';
+	import type { Player } from '$lib/types';
 
-	export let settings: Settings;
+	export let players: Player[];
 
 	let spinner: HTMLCanvasElement;
 	let myChart: Chart;
@@ -16,11 +16,11 @@
 	const data: ChartData = {
 		datasets: [
 			{
-				data: new Array(settings.players.length).fill(10),
-				hoverOffset: 4
+				data: new Array(players.length).fill(10),
+				hoverOffset: 2
 			}
 		],
-		labels: settings.players.map((item) => item.name)
+		labels: players.map((item) => item.name)
 	};
 
 	const config: ChartConfiguration = {
@@ -30,7 +30,7 @@
 		options: {
 			plugins: {
 				datalabels: {
-					formatter: (_, context) => settings.players[context.dataIndex].name
+					formatter: (_, context) => players[context.dataIndex].name
 				},
 				legend: {
 					display: false
@@ -66,7 +66,7 @@
 
 <div class="relative flex w-1/2 items-center justify-center">
 	<canvas bind:this={spinner} style="transform: rotate({$angle}deg)">Spinner</canvas>
-	{#if !spinning}
+	{#if !spinning && players.length > 3}
 		<button
 			in:fade
 			out:fade
