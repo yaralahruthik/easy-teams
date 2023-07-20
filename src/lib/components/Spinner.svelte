@@ -1,9 +1,11 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { cubicOut } from 'svelte/easing';
+	import { tweened } from 'svelte/motion';
 	import Chart, { type ChartConfiguration, type ChartData } from 'chart.js/auto';
 	import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 	import type { Settings } from '$lib/types';
-	import { onMount } from 'svelte';
 
 	export let settings: Settings;
 
@@ -44,14 +46,23 @@
 		if (ctx) myChart = new Chart(ctx, config);
 	});
 
-	const onSpin = () => {};
+	let spinning = false;
+
+	let angle = tweened(0, { duration: 4000, easing: cubicOut });
+
+	const onSpin = () => {
+		angle.set(0);
+		angle.update((n) => n + 60 * 200);
+	};
 </script>
 
-<div class="relative w-1/2">
-	<canvas bind:this={spinner}>Spinner</canvas>
-	<button
-		on:click={onSpin}
-		class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-sm bg-black px-4 py-2 text-3xl text-white hover:bg-gray-900"
-		>Spin</button
-	>
+<div class="relative flex w-1/2 items-center justify-center">
+	<canvas bind:this={spinner} style="transform: rotate({$angle}deg)">Spinner</canvas>
+	{#if !spinning}
+		<button
+			on:click={onSpin}
+			class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded bg-black px-4 py-2 text-xl text-white hover:bg-gray-900"
+			>SPIN</button
+		>
+	{/if}
 </div>
