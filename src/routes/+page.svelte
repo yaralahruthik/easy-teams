@@ -15,10 +15,12 @@
 	let playerString = '';
 
 	$: {
-		settings.players = playerString
-			.split('\n')
-			.filter((line) => line.trim() !== '')
-			.map((item, idx) => ({ name: item, id: idx }));
+		if (playerString.trim())
+			settings.players = playerString
+				.split('\n')
+				.filter((line) => line.trim() !== '')
+				.map((item, idx) => ({ name: item, id: idx }));
+		else settings.players = [{ id: 1, name: 'p1' }];
 	}
 </script>
 
