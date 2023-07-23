@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Header from '$lib/components/Header.svelte';
+	import PlayersList from '$lib/components/PlayersList.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
+	import TeamsList from '$lib/components/TeamsList.svelte';
 	import type { Settings } from '$lib/types';
-
-	import '../app.css';
 
 	let settings: Settings = {
 		numOfTeams: 2,
@@ -22,22 +22,44 @@
 				.map((item, idx) => ({ name: item, id: idx }));
 		else settings.players = [{ id: 1, name: 'p1' }];
 	}
+
+	const shuffleArray = <T>(array: T[]): T[] => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
+
+	const makeTeams = () => {
+		settings.teams = Array.from({ length: settings.numOfTeams }, (_, i) => ({
+			name: `Team ${i + 1}`,
+			players: []
+		}));
+
+		settings.players = shuffleArray(settings.players);
+
+		for (const player of settings.players) {
+			const smallestTeamIndex = settings.teams.reduce(
+				(minIndex, currentTeam, i, arr) =>
+					currentTeam.players.length < arr[minIndex].players.length ? i : minIndex,
+				0
+			);
+
+			settings.teams[smallestTeamIndex].players.push(player);
+		}
+
+		settings = { ...settings };
+	};
 </script>
 
 <Header bind:settings />
-<div class="grid grid-flow-row grid-cols-1 grid-rows-3 p-2">
-	<div class="h-full">
-		{#key playerString}
-			<Spinner bind:players={settings.players} />
-		{/key}
-	</div>
-	<textarea
-		bind:value={playerString}
-		class="w-full rounded border border-black p-1"
-		placeholder="Enter Players seperated by a new line! Example: 
-Player 1 
-Player 2
-		"
-	/>
-	<div />
+<div class="grid grid-cols-1 grid-rows-3 gap-2 p-2">
+	{#key playerString}
+		<Spinner bind:settings onMakeTeams={makeTeams} />
+	{/key}
+	<PlayersList bind:settings bind:playerString />
+	{#if settings.teams.length != 0}
+		<TeamsList bind:teams={settings.teams} />
+	{/if}
 </div>

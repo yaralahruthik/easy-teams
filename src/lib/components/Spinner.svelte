@@ -6,9 +6,10 @@
 	import Chart, { type ChartConfiguration, type ChartData } from 'chart.js/auto';
 	import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-	import type { Player } from '$lib/types';
+	import type { Settings } from '$lib/types';
 
-	export let players: Player[];
+	export let settings: Settings;
+	export let onMakeTeams: () => void;
 
 	let spinner: HTMLCanvasElement;
 	let myChart: Chart;
@@ -16,11 +17,11 @@
 	const data: ChartData = {
 		datasets: [
 			{
-				data: new Array(players.length).fill(10),
+				data: new Array(settings.players.length).fill(10),
 				hoverOffset: 2
 			}
 		],
-		labels: players.map((item) => item.name)
+		labels: settings.players.map((item) => item.name)
 	};
 
 	const config: ChartConfiguration = {
@@ -30,7 +31,7 @@
 		options: {
 			plugins: {
 				datalabels: {
-					formatter: (_, context) => players[context.dataIndex].name
+					formatter: (_, context) => settings.players[context.dataIndex].name
 				},
 				legend: {
 					display: false
@@ -50,23 +51,27 @@
 	let spinning = false;
 	let hasSpinned = false;
 
-	let angle = tweened(0, { duration: 4000, easing: cubicOut });
+	let angle = tweened(0, { duration: 3000, easing: cubicOut });
 
 	const onSpin = () => {
+		if (settings.quickMode) {
+			onMakeTeams();
+			return;
+		}
 		spinning = true;
 		hasSpinned = true;
-		angle.set(0);
 		angle
-			.update((n) => n + 60 * 200)
+			.update((n) => n + 360 * 10)
 			.then(() => {
 				spinning = false;
+				onMakeTeams();
 			});
 	};
 </script>
 
-<div class="relative flex w-1/2 items-center justify-center">
+<div class="relative mx-auto flex w-1/2 items-center justify-center md:w-80">
 	<canvas bind:this={spinner} style="transform: rotate({$angle}deg)">Spinner</canvas>
-	{#if !spinning && players.length > 3}
+	{#if !spinning && settings.players.length > 3}
 		<button
 			in:fade
 			out:fade
