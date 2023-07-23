@@ -2,9 +2,17 @@
 	"name": "Easy Teams",
 	"short_name": "ET",
 	"start_url": "/",
+	"scope": "/",
+	"description": "Experience seamless team creation with Easy Teams, a unique app designed to instantly generate balanced teams from your player list. Perfect for coaches, trainers, and event organizers seeking efficient team-making solutions.",
 	"icons": [
 		{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
-		{ "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+		{ "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" },
+		{
+			"src": "/maskable_icon_x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
 	],
 	"theme_color": "#ffffff",
 	"background_color": "#ffffff",
