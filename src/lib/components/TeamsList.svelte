@@ -12,9 +12,9 @@
 >
 	{#each teams as team}
 		<div>
-			<p>{team.name}</p>
+			<p class="font-bold">{team.name}</p>
 			{#each team.players as player (player.id)}
-				<p in:fly={{ y: -200, duration: 1500 }}>{player.name}</p>
+				<p class="text-center" in:fly={{ y: -200, duration: 1500 }}>{player.name}</p>
 			{/each}
 		</div>
 	{/each}
